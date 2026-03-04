@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Coming Soon — Join the Waitlist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0d1520;
+      --bg2:      #1a2535;
+      --accent1:  #38bdf8;
+      --accent2:  #818cf8;
+      --purple:   #6366f1;
+      --text:     #e2e8f0;
+      --muted:    #94a3b8;
+      --faint:    #64748b;
+      --border:   rgba(255,255,255,0.09);
+      --glass:    rgba(255,255,255,0.05);
+      --red:      #f87171;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f1923 0%, var(--bg2) 50%, var(--bg) 100%);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+    }
+
+    .orb {
+      position: fixed;
+      top: 40%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    #page {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px 20px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade1 { animation: fadeUp .6s ease both; }
+    .fade2 { animation: fadeUp .6s .15s ease both; }
+    .fade3 { animation: fadeUp .6s .28s ease both; }
+    .fade4 { animation: fadeUp .6s .4s ease both; }
+
+    .icon-box {
+      width: 72px; height: 72px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--purple), #4f46e5);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 32px;
+      box-shadow: 0 8px 32px rgba(99,102,241,0.45);
+    }
+
+    h1.title {
+      font-family: sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      color: #fff;
+      text-align: center;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+    h1.gradient {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+      margin-bottom: 24px;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 1rem;
+      text-align: center;
+      max-width: 500px;
+      line-height: 1.75;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px;
+      width: 100%;
+      max-width: 500px;
+      backdrop-filter: blur(14px);
+    }
+
+    .input-row {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+      transition: border-color .2s;
+    }
+    .input-row:focus-within { border-color: rgba(99,102,241,0.6); }
+    .input-row svg { flex-shrink: 0; }
+    .input-row input {
+      background: transparent;
+      border: none; outline: none;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      width: 100%;
+      caret-color: var(--accent2);
+    }
+    .input-row input::placeholder { color: var(--faint); }
+
+    .btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: 10px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      border: none;
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: opacity .2s, transform .1s;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn:active { transform: scale(0.99); }
+    .btn:disabled { background: rgba(99,102,241,0.35); cursor: not-allowed; opacity: 1; }
+
+    .error-msg {
+      color: var(--red);
+      font-size: 0.83rem;
+      text-align: center;
+      margin: 0 0 14px;
+      display: none;
+    }
+    .error-msg.show { display: block; }
+
+    .privacy {
+      color: var(--faint);
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 18px;
+    }
+
+    .success { text-align: center; padding: 12px 0; display: none; }
+    .success.show { display: block; }
+    .success-emoji { font-size: 2.5rem; margin-bottom: 12px; }
+    .success h3 { color: var(--text); font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+    .success p  { color: var(--muted); font-size: 0.9rem; }
+    .success span { color: var(--accent2); }
+
+    /* ── Admin button ─────────────────────────────────── */
+    #admin-btn {
+      position: fixed; bottom: 16px; left: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 7px 12px;
+      color: #2d3748;
+      font-size: 0.7rem;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 5px;
+      font-family: 'DM Sans', sans-serif;
+      transition: color .2s, border-color .2s;
+      z-index: 50;
+    }
+    #admin-btn:hover { color: var(--faint); border-color: rgba(255,255,255,0.12); }
+
+    /* ── Modal ────────────────────────────────────────── */
+    .overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(0,0,0,0.78);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .overlay.show { display: flex; }
+
+    .modal {
+      background: #1a2535;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: 36px;
+      width: 100%; max-width: 360px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+    }
+    .modal-icon {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--purple), #4f46e5);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px;
+      box-shadow: 0 6px 24px rgba(99,102,241,0.4);
+    }
+    .modal h3 {
+      font-family: 'Syne', sans-serif;
+      color: #fff; font-size: 1.2rem; font-weight: 800;
+      text-align: center; margin-bottom: 6px;
+    }
+    .modal p { color: var(--faint); font-size: 0.85rem; text-align: center; margin-bottom: 22px; }
+    .pass-row {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 13px 16px;
+      margin-bottom: 8px;
+      transition: border-color .2s;
+    }
+    .pass-row:focus-within { border-color: rgba(99,102,241,0.6); }
+    .pass-row input {
+      background: transparent; border: none; outline: none;
+      color: var(--text); font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem; width: 100%;
+      caret-color: var(--accent2);
+    }
+    .pass-row input::placeholder { color: var(--faint); }
+    .eye-btn { background: none; border: none; cursor: pointer; padding: 0; flex-shrink: 0; }
+    .modal-btns { display: flex; gap: 10px; margin-top: 16px; }
+    .btn-cancel {
+      flex: 1; padding: 13px; border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--muted); font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; cursor: pointer;
+    }
+    .btn-unlock {
+      flex: 2; padding: 13px; border-radius: 10px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      border: none; color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 0.9rem; cursor: pointer;
+    }
+
+    /* ── Admin Panel ──────────────────────────────────── */
+    #admin-panel {
+      display: none;
+      min-height: 100vh;
+      padding: 40px 20px;
+      flex-direction: column;
+      align-items: center;
+      position: relative; z-index: 1;
+    }
+    #admin-panel.show { display: flex; }
+    #page.hidden { display: none; }
+
+    .panel-header {
+      width: 100%; max-width: 780px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
+    }
+    .panel-header h2 { font-family: 'Syne', sans-serif; color: #fff; font-size: 1.5rem; font-weight: 800; }
+    .panel-header .subtitle { color: var(--faint); font-size: 0.85rem; margin-top: 4px; }
+    .panel-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-sm {
+      display: flex; align-items: center; gap: 6px;
+      padding: 9px 16px; border-radius: 9px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem; cursor: pointer; border: none;
+    }
+    .btn-sm.ghost {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--muted);
+    }
+    .btn-sm.light {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text); font-weight: 600;
+    }
+
+    .table-wrap {
+      width: 100%; max-width: 780px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: rgba(255,255,255,0.05); }
+    th {
+      color: var(--muted); font-weight: 600; font-size: 0.76rem;
+      text-align: left; padding: 13px 16px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    tbody tr { border-top: 1px solid rgba(255,255,255,0.05); transition: background .15s; }
+    tbody tr:hover { background: rgba(255,255,255,0.03); }
+    td { padding: 13px 16px; font-size: 0.88rem; }
+    .td-num  { color: var(--faint); }
+    .td-name { color: var(--text); font-weight: 500; }
+    .td-mail { color: var(--accent2); }
+    .td-date { color: var(--faint); font-size: 0.78rem; }
+    .btn-delete {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.22);
+      border-radius: 7px; padding: 5px 8px;
+      cursor: pointer; color: var(--red);
+      display: flex; align-items: center;
+    }
+    tfoot td {
+      padding: 11px 16px;
+      color: var(--faint); font-size: 0.78rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .empty-state { text-align: center; padding: 50px 20px; color: var(--faint); }
+    .empty-state .emoji { font-size: 2rem; margin-bottom: 10px; }
+
+    .alert-error {
+      width: 100%; max-width: 780px;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 10px; padding: 14px 18px;
+      margin-bottom: 20px; color: var(--red); font-size: 0.9rem;
+      display: none;
+    }
+    .alert-error.show { display: block; }
+  </style>
+</head>
+<body>
+
+<div class="orb"></div>
+
+<!-- ── Waitlist Page ─────────────────────────────────── -->
+<div id="page">
+
+  <div class="icon-box fade1">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+      <path d="M12 2L13.09 8.26L19 6L15.45 11.05L21 12L15.45 12.95L19 18L13.09 15.74L12 22L10.91 15.74L5 18L8.55 12.95L3 12L8.55 11.05L5 6L10.91 8.26L12 2Z"/>
+    </svg>
+  </div>
+
+  <h1 class="title fade2">Something Amazing</h1>
+  <h1 class="gradient fade2">Is Coming Soon</h1>
+  <p class="sub fade3">
+    Be the first to know when we launch. Join our exclusive waitlist and get
+    early access to something extraordinary.
+  </p>
+
+  <div class="card fade4">
+    <div id="form-section">
+      <div class="input-row">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <input id="input-name" type="text" placeholder="Enter your full name" autocomplete="name"/>
+      </div>
+      <div class="input-row">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+        </svg>
+        <input id="input-email" type="email" placeholder="Enter your email address" autocomplete="email"/>
+      </div>
+      <p id="form-error" class="error-msg"></p>
+      <button class="btn" id="join-btn" onclick="handleJoin()">Join the Waitlist</button>
+      <p class="privacy">No spam, ever. We respect your privacy.</p>
+    </div>
+
+    <div class="success" id="success-section">
+      <div class="success-emoji">🎉</div>
+      <h3 id="success-name"></h3>
+      <p>We'll notify <span id="success-email"></span> when we launch.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Admin Button ───────────────────────────────────── -->
+<button id="admin-btn" onclick="openAdminModal()">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+  </svg>
+  Admin
+</button>
+
+<!-- ── Admin Login Modal ──────────────────────────────── -->
+<div class="overlay" id="admin-modal">
+  <div class="modal">
+    <div class="modal-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+    </div>
+    <h3>Admin Access</h3>
+    <p>Enter your admin password to continue</p>
+    <div class="pass-row">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+      <input id="pass-input" type="password" placeholder="Enter admin password" onkeydown="if(event.key==='Enter') unlockAdmin()"/>
+      <button class="eye-btn" onclick="togglePass()" id="eye-btn">
+        <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+          <line x1="1" y1="1" x2="23" y2="23"/>
+        </svg>
+      </button>
+    </div>
+    <p id="pass-error" class="error-msg"></p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeAdminModal()">Cancel</button>
+      <button class="btn-unlock" onclick="unlockAdmin()">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Admin Panel ────────────────────────────────────── -->
+<div id="admin-panel">
+  <div class="panel-header">
+    <div>
+      <h2>🛡 Admin Panel</h2>
+      <div class="subtitle" id="panel-subtitle">Loading...</div>
+    </div>
+    <div class="panel-actions">
+      <button class="btn-sm ghost" onclick="loadSignups()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+        </svg>
+        Refresh
+      </button>
+      <button class="btn-sm light" id="csv-btn" onclick="downloadCSV()" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Download CSV
+      </button>
+      <button class="btn-sm ghost" onclick="logoutAdmin()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        Logout
+      </button>
+    </div>
+  </div>
+
+  <div class="alert-error" id="panel-error"></div>
+
+  <div class="table-wrap">
+    <div class="empty-state" id="table-loading">
+      <div class="emoji">⏳</div>
+      <p>Loading signups...</p>
+    </div>
+    <div class="empty-state" id="table-empty" style="display:none">
+      <div class="emoji">📭</div>
+      <p>No signups yet.</p>
+    </div>
+    <table id="signups-table" style="display:none">
+      <thead>
+        <tr><th>#</th><th>Name</th><th>Email</th><th>Signed Up</th><th></th></tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+      <tfoot>
+        <tr><td colspan="5" id="table-footer"></td></tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+<script>
+  // ──────────────────────────────────────────────────────
+  // 🔧 CONFIG — update these two values
+  // ──────────────────────────────────────────────────────
+  const API_URL = "https://waitlists.duckdns.org";  // e.g. http://54.123.45.67:3000
+  let ADMIN_SECRET = ""; // fetched from server on login
+
+  // ── API helpers ──────────────────────────────────────
+  async function apiAdd(name, email) {
+    const res = await fetch(`${API_URL}/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Request failed");
+    return data;
+  }
+
+  async function apiFetchAll() {
+    const res = await fetch(`${API_URL}/signups`, {
+      headers: { "x-admin-token": ADMIN_SECRET },
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Request failed");
+    return data.records || [];
+  }
+
+  async function apiDelete(id) {
+    const res = await fetch(`${API_URL}/signup/${id}`, {
+      method: "DELETE",
+      headers: { "x-admin-token": ADMIN_SECRET },
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Request failed");
+    return data;
+  }
+
+  // ── Waitlist form ────────────────────────────────────
+  async function handleJoin() {
+    const nameVal  = document.getElementById("input-name").value.trim();
+    const emailVal = document.getElementById("input-email").value.trim();
+    const errEl    = document.getElementById("form-error");
+    const btn      = document.getElementById("join-btn");
+
+    errEl.classList.remove("show");
+
+    if (!nameVal || !emailVal) {
+      return showError(errEl, "Please fill in both fields.");
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+      return showError(errEl, "Please enter a valid email address.");
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Joining...";
+
+    try {
+      await apiAdd(nameVal, emailVal);
+      document.getElementById("form-section").style.display = "none";
+      document.getElementById("success-name").textContent = `You're on the list, ${nameVal}!`;
+      document.getElementById("success-email").textContent = emailVal;
+      document.getElementById("success-section").classList.add("show");
+    } catch (e) {
+      btn.disabled = false;
+      btn.textContent = "Join the Waitlist";
+      if (e.message === "duplicate") {
+        showError(errEl, "This email is already on the waitlist!");
+      } else {
+        showError(errEl, "Something went wrong. Please try again.");
+      }
+    }
+  }
+
+  document.getElementById("input-email").addEventListener("keydown", e => {
+    if (e.key === "Enter") handleJoin();
+  });
+
+  // ── Admin modal ──────────────────────────────────────
+  // NOTE: The password check here is just UX — real auth is enforced by the backend token.
+  const ADMIN_UI_PASSWORD = "admin1234"; // Change this — it's just a UI gate
+
+  function openAdminModal() {
+    document.getElementById("admin-modal").classList.add("show");
+    setTimeout(() => document.getElementById("pass-input").focus(), 50);
+  }
+  function closeAdminModal() {
+    document.getElementById("admin-modal").classList.remove("show");
+    document.getElementById("pass-input").value = "";
+    document.getElementById("pass-error").classList.remove("show");
+  }
+  function togglePass() {
+    const input = document.getElementById("pass-input");
+    const icon  = document.getElementById("eye-icon");
+    if (input.type === "password") {
+      input.type = "text";
+      icon.innerHTML = '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>';
+    } else {
+      input.type = "password";
+      icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    }
+  }
+  async function unlockAdmin() {
+    const val = document.getElementById("pass-input").value;
+    const err = document.getElementById("pass-error");
+    try {
+      const res = await fetch(`${API_URL}/admin/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: val })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      ADMIN_SECRET = data.token;
+      closeAdminModal();
+      document.getElementById("page").classList.add("hidden");
+      document.getElementById("admin-btn").style.display = "none";
+      document.getElementById("admin-panel").classList.add("show");
+      loadSignups();
+    } catch (e) {
+      showError(err, "Incorrect password. Try again.");
+      document.getElementById("pass-input").value = "";
+    }
+  }
+  function logoutAdmin() {
+    document.getElementById("admin-panel").classList.remove("show");
+    document.getElementById("page").classList.remove("hidden");
+    document.getElementById("admin-btn").style.display = "flex";
+  }
+
+  // ── Admin panel ──────────────────────────────────────
+  let signupsData = [];
+
+  async function loadSignups() {
+    document.getElementById("table-loading").style.display = "block";
+    document.getElementById("table-empty").style.display   = "none";
+    document.getElementById("signups-table").style.display = "none";
+    document.getElementById("panel-error").classList.remove("show");
+
+    try {
+      signupsData = await apiFetchAll();
+      renderTable();
+    } catch (err) {
+      showPanelError("Failed to load signups. Is the server running? " + err.message);
+    } finally {
+      document.getElementById("table-loading").style.display = "none";
+    }
+  }
+
+  function renderTable() {
+    document.getElementById("panel-subtitle").textContent =
+      `${signupsData.length} signup${signupsData.length !== 1 ? "s" : ""} · MySQL`;
+
+    if (signupsData.length === 0) {
+      document.getElementById("table-empty").style.display = "block";
+      document.getElementById("csv-btn").style.display = "none";
+      return;
+    }
+
+    document.getElementById("csv-btn").style.display = "flex";
+    document.getElementById("signups-table").style.display = "table";
+
+    document.getElementById("table-body").innerHTML = signupsData.map((r, i) => `
+      <tr>
+        <td class="td-num">${i + 1}</td>
+        <td class="td-name">${escHtml(r.name)}</td>
+        <td class="td-mail">${escHtml(r.email)}</td>
+        <td class="td-date">${r.timestamp}</td>
+        <td>
+          <button class="btn-delete" onclick="deleteEntry(${r.rowIndex})">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+              <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+            </svg>
+          </button>
+        </td>
+      </tr>
+    `).join("");
+
+    document.getElementById("table-footer").textContent =
+      `${signupsData.length} record${signupsData.length !== 1 ? "s" : ""} · AWS RDS MySQL`;
+  }
+
+  async function deleteEntry(id) {
+    try {
+      await apiDelete(id);
+      await loadSignups();
+    } catch (err) {
+      showPanelError("Failed to delete entry: " + err.message);
+    }
+  }
+
+  function downloadCSV() {
+    const rows = [
+      ["Name", "Email", "Signed Up At"].join(","),
+      ...signupsData.map(r =>
+        [`"${r.name}"`, `"${r.email}"`, `"${r.timestamp}"`].join(",")
+      ),
+    ].join("\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([rows], { type: "text/csv" }));
+    a.download = "waitlist.csv";
+    a.click();
+  }
+
+  function showError(el, msg) {
+    el.textContent = "⚠ " + msg;
+    el.classList.add("show");
+  }
+  function showPanelError(msg) {
+    const el = document.getElementById("panel-error");
+    el.textContent = "⚠ " + msg;
+    el.classList.add("show");
+  }
+  function escHtml(str) {
+    return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+</script>
+</body>
+</html>
